@@ -4,6 +4,7 @@ require("dotenv").config();
 const models = require("../modelData/models.js");
 
 const User = require("../db/userModel.js");
+console.log("Đường link DB_URL là:", process.env.DB_URL);
 const Photo = require("../db/photoModel.js");
 const SchemaInfo = require("../db/schemaInfo.js");
 
