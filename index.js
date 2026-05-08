@@ -9,7 +9,10 @@ const session = require("express-session");
 
 dbConnect();
 
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:3000", // Chỉ định đích danh frontend được phép gọi
+  credentials: true // Cấp phép nhận và gửi cookie/session
+}));
 app.use(express.json());
 
 // 1. Cấu hình session
