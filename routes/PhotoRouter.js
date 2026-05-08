@@ -16,6 +16,7 @@ router.get("/photosOfUser/:id", async (req, res) => {
     // Lấy ảnh của user và tự động "populate" thông tin user vào trong từng comment
     const photos = await Photo.find({ user_id: userId }).populate({
       path: "comments.user_id", // Đường dẫn tới field lưu ID user trong comment
+      model: User, // Chỉ định rõ cho Mongoose biết phải lấy data từ Model User
       select: "_id first_name last_name" // Chỉ lấy 3 trường này của User
     });
 
