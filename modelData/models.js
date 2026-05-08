@@ -58,6 +58,7 @@ const im = {
   location: "Austin, TX",
   description: "Should've stayed in the car.",
   occupation: "Mathematician",
+  login_name: "malcolm", // Thêm dòng này
 };
 const er = {
   _id: "57231f1a30e4351f4e9f4bd8",
@@ -66,6 +67,7 @@ const er = {
   location: "Nostromo",
   description: "Lvl 6 rating. Pilot.",
   occupation: "Warrant Officer",
+  login_name: "ripley", // Thêm dòng này
 };
 const pt = {
   _id: "57231f1a30e4351f4e9f4bd9",
@@ -78,6 +80,7 @@ const pt = {
     "until the stars are all alight... Mist and shadow, cloud and shade, " +
     "all shall fade... all... shall... fade... ",
   occupation: "Thain",
+  login_name: "took", // Thêm dòng này
 };
 const rk = {
   _id: "57231f1a30e4351f4e9f4bda",
@@ -86,6 +89,7 @@ const rk = {
   location: "D'Qar",
   description: "Excited to be here!",
   occupation: "Rebel",
+  login_name: "kenobi", // Thêm dòng này
 };
 const al = {
   _id: "57231f1a30e4351f4e9f4bdb",
@@ -94,6 +98,7 @@ const al = {
   location: "Pawnee, IN",
   description: "Witch",
   occupation: "Animal Control",
+  login_name: "ludgate", // Thêm dòng này
 };
 const jo = {
   _id: "57231f1a30e4351f4e9f4bdc",
@@ -102,6 +107,7 @@ const jo = {
   location: "Stanford, CA",
   description: "<i>CS142!</i>",
   occupation: "Professor",
+  login_name: "ousterhout", // Thêm dòng này
 };
 
 const users = [im, er, pt, rk, al, jo];

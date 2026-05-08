@@ -5,17 +5,39 @@ const dbConnect = require("./db/dbConnect");
 const UserRouter = require("./routes/UserRouter");
 const PhotoRouter = require("./routes/PhotoRouter");
 // const CommentRouter = require("./routes/CommentRouter");
+const session = require("express-session");
 
 dbConnect();
 
 app.use(cors());
 app.use(express.json());
+
+// 1. Cấu hình session
+app.use(session({
+  secret: "secretKey", // Nên để trong file .env
+  resave: false,
+  saveUninitialized: false
+}));
+
+// 2. Middleware kiểm tra đăng nhập cho tất cả các API (trừ admin) 
+app.use((req, res, next) => {
+  // Cho phép đi qua nếu là route login/logout hoặc đã đăng nhập
+  if (req.path === "/admin/login" || req.path === "/admin/logout" || req.session.user) {
+    next();
+  } else {
+    res.status(401).send("Unauthorized"); // Trả về 401 nếu chưa login 
+  }
+}); 
+
+// 3. Mount AdminRouter
+app.use("/admin", require("./routes/AdminRouter"));
 app.use("/user", UserRouter);
 app.use("/", PhotoRouter);
 
 app.get("/", (request, response) => {
   response.send({ message: "Hello from photo-sharing app API!" });
 });
+
 
 app.listen(8081, () => {
   console.log("server listening on port 8081");
