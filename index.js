@@ -14,6 +14,8 @@ app.use(cors({
   credentials: true // Cấp phép nhận và gửi cookie/session
 }));
 app.use(express.json());
+// THÊM DÒNG NÀY ĐỂ CẤP QUYỀN TRUY CẬP VÀO THƯ MỤC IMAGES
+app.use("/images", express.static(__dirname + "/images"));
 
 // 1. Cấu hình session
 app.use(session({

@@ -3,6 +3,12 @@ const Photo = require("../db/photoModel");
 const User = require("../db/userModel");
 const router = express.Router();
 
+const multer = require("multer");
+const fs = require("fs");
+
+// Cấu hình multer để lưu file tạm thời vào bộ nhớ RAM (memory)
+const processFormBody = multer({ storage: multer.memoryStorage() }).single('uploadedphoto');
+
 router.get("/photosOfUser/:id", async (req, res) => {
   try {
     const userId = req.params.id;
@@ -84,5 +90,52 @@ router.post("/commentsOfPhoto/:photo_id", async (req, res) => {
     res.status(400).send("Error adding comment to database");
   }
 });
+
+// API: Upload ảnh mới
+router.post("/photos/new", (req, res) => {
+  // Dùng multer để xử lý request chứa file
+  processFormBody(req, res, async function (err) {
+    if (err || !req.file) {
+      return res.status(400).send("No file uploaded");
+    }
+
+    // Yêu cầu phải có file name
+    if (!req.file.originalname) {
+      return res.status(400).send("Missing file name");
+    }
+
+    try {
+      // Lấy ID của người đang đăng nhập
+      const userId = req.session.user._id;
+
+      // Tạo một tên file ngẫu nhiên để tránh bị trùng lặp (dùng timestamp)
+      const timestamp = new Date().valueOf();
+      const filename = 'U' + String(timestamp) + req.file.originalname;
+
+      // Ghi file từ RAM vào thư mục 'images' của project
+      fs.writeFile("./images/" + filename, req.file.buffer, async function (err) {
+        if (err) {
+          return res.status(400).send("Error writing file");
+        }
+
+        // Sau khi lưu file vật lý thành công, tạo record mới trong Database
+        const newPhoto = new Photo({
+          file_name: filename,
+          date_time: new Date(),
+          user_id: userId,
+          comments: [] // Ảnh mới chưa có comment
+        });
+
+        await newPhoto.save();
+        res.status(200).send({ message: "Photo uploaded successfully", photo: newPhoto });
+      });
+    } catch (error) {
+      console.error("Error saving photo to DB:", error);
+      res.status(500).send("Internal server error");
+    }
+  });
+});
+
+module.exports = router;
 
 module.exports = router;
