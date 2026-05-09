@@ -27,7 +27,7 @@ app.use(session({
 // 2. Middleware kiểm tra đăng nhập cho tất cả các API (trừ admin) 
 app.use((req, res, next) => {
   // Cho phép đi qua nếu là route login/logout hoặc đã đăng nhập
-  if (req.path === "/admin/login" || req.path === "/admin/logout" || req.session.user) {
+  if (req.path === "/admin/login" || req.path === "/admin/logout" || (req.path === "/user" && req.method === "POST") || req.session.user) {
     next();
   } else {
     res.status(401).send("Unauthorized"); // Trả về 401 nếu chưa login 

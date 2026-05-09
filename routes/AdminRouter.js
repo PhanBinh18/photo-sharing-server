@@ -7,10 +7,13 @@ router.post("/login", async (req, res) => {
   const { login_name } = req.body; // Lấy login_name từ body [cite: 226, 228]
   
   try {
-    const user = await User.findOne({ login_name }); // Kiểm tra user tồn tại [cite: 229]
+    const { login_name, password } = req.body; // Lấy thêm password từ body
+
+    // Tìm user khớp CẢ tên đăng nhập LẪN mật khẩu
+    const user = await User.findOne({ login_name: login_name, password: password });
     
     if (!user) {
-      return res.status(400).send("Login name is not a valid account"); // [cite: 227]
+      return res.status(400).send("Tên đăng nhập hoặc mật khẩu không chính xác!");
     }
 
     // Lưu thông tin vào session 
