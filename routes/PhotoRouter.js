@@ -45,4 +45,44 @@ router.get("/photosOfUser/:id", async (req, res) => {
   }
 });
 
+// API: Thêm bình luận mới vào một bức ảnh
+router.post("/commentsOfPhoto/:photo_id", async (req, res) => {
+  try {
+    const photoId = req.params.photo_id;
+    const commentText = req.body.comment; // Lấy nội dung comment từ body
+    
+    // 1. Kiểm tra xem người dùng có truyền comment lên không, hoặc comment có bị rỗng không
+    if (!commentText || commentText.trim().length === 0) {
+      return res.status(400).send("Comment text cannot be empty");
+    }
+
+    // 2. Lấy ID của người dùng đang đăng nhập từ Session
+    // (Middleware ở index.js đã đảm bảo rằng nếu lọt được vào hàm này thì chắc chắn req.session.user tồn tại)
+    const userId = req.session.user._id;
+
+    // 3. Tìm bức ảnh trong Database
+    const photo = await Photo.findById(photoId);
+    if (!photo) {
+      return res.status(400).send("Photo not found");
+    }
+
+    // 4. Tạo đối tượng comment mới
+    const newComment = {
+      comment: commentText,
+      date_time: new Date(), // Lấy thời gian hiện tại của server
+      user_id: userId        // Gắn ID của người đang đăng nhập làm tác giả
+    };
+
+    // 5. Thêm comment vào mảng comments của bức ảnh và lưu lại
+    photo.comments.push(newComment);
+    await photo.save(); // Mongoose sẽ tự động cập nhật document này vào Database
+
+    // Trả về thành công
+    res.status(200).send({ message: "Comment added successfully" }); // Trả về dạng Object JSON
+  } catch (error) {
+    console.error("Error adding comment:", error);
+    res.status(400).send("Error adding comment to database");
+  }
+});
+
 module.exports = router;
